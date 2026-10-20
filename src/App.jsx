@@ -88,15 +88,6 @@ export default function App() {
   const totalExpense = expenses.reduce((sum, t) => sum + t.amount, 0);
   const totalIncome = income.reduce((sum, t) => sum + t.amount, 0);
   const balance = totalIncome - totalExpense;
-  const budgetPercentage =
-  budget > 0
-    ? (totalExpense / budget) * 100
-    : totalExpense > 0
-      ? 100
-      : 0;
-
-  const displayedPercentage = Math.round(budgetPercentage);
-  const progressWidth = Math.min(100, budgetPercentage);
   const visibleTransactions = transactions
     .filter((t) => filter === "All" || t.type === filter.toLowerCase())
     .slice()
@@ -237,19 +228,7 @@ export default function App() {
               <article className="panel budget-panel">
                 <div className="panel-heading"><div><h2>Monthly budget</h2><p>Your spending limit</p></div><span className="heading-icon"><Target size={18} /></span></div>
                 <div className="budget-total"><strong>{money(budget)}</strong><button className="text-button" onClick={() => { setBudgetDraft(String(budget)); setEditingBudget(true); setPage("Budget"); }}>Edit budget</button></div>
-                <div className="budget-progress-label">
-  <span>Spent {money(totalExpense)}</span>
-  <span>{displayedPercentage}%</span>
-</div>
-
-<div className="progress-track budget-track">
-  <div
-    className={`progress-fill ${
-      totalExpense > budget ? "over-budget" : ""
-    }`}
-    style={{ width: `${progressWidth}%` }}
-  />
-  </div>
+                <div className="budget-progress-label"><span>Spent {money(totalExpense)}</span><span>{budget ? Math.round(totalExpense / budget * 100) : totalExpense ? 100 : 0}%</span></div>
                 <div className="progress-track budget-track"><div className={`progress-fill ${totalExpense > budget ? "over-budget" : ""}`} style={{ width: `${budget > 0 ? Math.min(100, totalExpense / budget * 100) : totalExpense > 0 ? 100 : 0}%` }} /></div>
                 <div className={`budget-message ${totalExpense > budget ? "warning" : ""}`}>{totalExpense > budget ? <AlertTriangle size={17} /> : <CheckCircle2 size={17} />}<span>{totalExpense > budget ? `${money(totalExpense - budget)} over budget` : `${money(budget - totalExpense)} left to spend`}</span></div>
                 <button className="secondary-button full-button" onClick={() => setPage("Budget")}>Manage budget <ArrowUpRight size={16} /></button>
